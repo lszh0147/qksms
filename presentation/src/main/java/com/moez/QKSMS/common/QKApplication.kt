@@ -56,8 +56,8 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
      * Inject these so that they are forced to initialize
      */
     @Suppress("unused")
-    @Inject lateinit var analyticsManager: AnalyticsManager
-    @Suppress("unused")
+//    @Inject lateinit var analyticsManager: AnalyticsManager
+//    @Suppress("unused")
     @Inject lateinit var qkMigration: QkMigration
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
