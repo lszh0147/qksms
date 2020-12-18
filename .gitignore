@@ -37,7 +37,7 @@ captures/
 .idea/*
 
 # Keystore files
-*.jks
+#*.jks
 
 # Mac .DS_STORE files
 *.DS_STORE
