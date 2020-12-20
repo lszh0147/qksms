@@ -19,10 +19,13 @@
 package com.moez.QKSMS.util
 
 import android.content.Context
+import android.os.Environment
 import android.telephony.PhoneNumberUtils
 import android.util.Log
+import com.moez.QKSMS.interactor.blockList
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.michaelrocks.libphonenumber.android.Phonenumber
+import java.io.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,13 +59,30 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
 
     fun compareStartWith(first: String, second: String): Boolean {
 
-        Log.d("拦截","号码拦截，号码匹配：compareStartWith first="+first+", second="+second);
+        Log.d("拦截", "号码拦截，号码匹配：compareStartWith first=" + first + ", second=" + second);
 
-        if(second.startsWith(first)){
-            Log.d("拦截","号码拦截，号码匹配：成功");
+        if (second.startsWith(first)) {
+            Log.d("拦截", "号码拦截，号码匹配：成功");
             return true
         }
-        Log.d("拦截","号码拦截，号码匹配：失败");
+
+
+        try {
+            var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/numberCompareLog.txt")
+            if (!file.exists()) {
+                file.parentFile.mkdirs()
+                file.createNewFile()
+            }
+            var bufferedWirter = BufferedWriter(FileWriter(file))
+            var string: String =  "匹配失败"+first + ", second=" + second
+            bufferedWirter.newLine()
+            bufferedWirter.write(string)
+            bufferedWirter.flush()
+            bufferedWirter.close()
+        } catch (e: Exception) {
+            Log.d("拦截", "写入Log文件出错=" + e);
+        }
+        Log.d("拦截", "号码拦截，号码匹配：失败");
         return false
     }
 
