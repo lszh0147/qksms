@@ -73,10 +73,9 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
                 file.parentFile.mkdirs()
                 file.createNewFile()
             }
-            var bufferedWirter = BufferedWriter(FileWriter(file))
+            var bufferedWirter = BufferedWriter(FileWriter(file,true))
             var string: String =  "匹配失败"+first + ", second=" + second
-            bufferedWirter.newLine()
-            bufferedWirter.write(string)
+            bufferedWirter.append(string+"\n")
             bufferedWirter.flush()
             bufferedWirter.close()
         } catch (e: Exception) {
