@@ -39,7 +39,7 @@ android {
     }
 
     productFlavors {
-        withAnalytics { dimension "analytics" }
+//        withAnalytics { dimension "analytics" }
         noAnalytics { dimension "analytics" }
     }
 }
@@ -92,7 +92,7 @@ dependencies {
     implementation project(":android-smsmms")
     implementation project(':common')
     implementation project(':domain')
-    withAnalyticsImplementation "com.amplitude:android-sdk:2.16.0"
+//    withAnalyticsImplementation "com.amplitude:android-sdk:2.16.0"
 }
 
 repositories {
