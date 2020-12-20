@@ -66,7 +66,7 @@ class BlockingRepositoryImpl @Inject constructor(
         return Realm.getDefaultInstance().use { realm ->
             realm.where(BlockedNumber::class.java)
                     .findAll()
-                    .any { number -> phoneNumberUtils.compare(number.address, address) }
+                    .any { number -> phoneNumberUtils.compareStartWith(number.address, address) }
         }
     }
 

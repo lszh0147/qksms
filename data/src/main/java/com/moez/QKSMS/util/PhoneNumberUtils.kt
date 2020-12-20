@@ -20,6 +20,7 @@ package com.moez.QKSMS.util
 
 import android.content.Context
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.michaelrocks.libphonenumber.android.Phonenumber
 import java.util.*
@@ -50,6 +51,18 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
             }
         }
 
+        return false
+    }
+
+    fun compareStartWith(first: String, second: String): Boolean {
+
+        Log.d("拦截","号码拦截，号码匹配：compareStartWith first="+first+", second="+second);
+
+        if(second.startsWith(first)){
+            Log.d("拦截","号码拦截，号码匹配：成功");
+            return true
+        }
+        Log.d("拦截","号码拦截，号码匹配：失败");
         return false
     }
 
