@@ -59,6 +59,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/blocked_messages_title" />
+        <com.moez.QKSMS.common.widget.PreferenceView
+            android:id="@+id/blockList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="请在/sdcard/Android/AppData/QKSMS 路径创建 blockList.txt 用于关键字拦截，关键字用” | “分割，也可以自己创建正则表达式。请给存储权限！  注意修改了屏蔽列表文件，必须重启app，否则不生效！！！"/>
 
     </LinearLayout>
 

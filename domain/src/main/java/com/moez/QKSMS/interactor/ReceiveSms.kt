@@ -18,7 +18,9 @@
  */
 package com.moez.QKSMS.interactor
 
+import android.os.Environment
 import android.telephony.SmsMessage
+import android.util.Log
 import com.moez.QKSMS.blocking.BlockingClient
 import com.moez.QKSMS.extensions.mapNotNull
 import com.moez.QKSMS.manager.NotificationManager
@@ -28,6 +30,11 @@ import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.Preferences
 import io.reactivex.Flowable
 import timber.log.Timber
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class ReceiveSms @Inject constructor(
@@ -39,7 +46,39 @@ class ReceiveSms @Inject constructor(
     private val updateBadge: UpdateBadge,
     private val shortcutManager: ShortcutManager
 ) : Interactor<ReceiveSms.Params>() {
+    var blockList:String? = null
+    init {
+        try {
+            var file =  File(Environment.getExternalStorageDirectory().absolutePath+"/Android/AppData/QKSMS/blockList.txt")
+            Log.d("拦截","file="+file);
+            if (file.exists()&&file.canRead()){
+                var bufferedReader = BufferedReader(FileReader(file))
+                var line:String? = null
+                var totalLine = StringBuffer()
+                while (bufferedReader.readLine().also { line = it } != null) {
+                    totalLine.append(line)
+                }
+                bufferedReader.close()
 
+                blockList = totalLine.toString()
+                if (blockList!=null){
+                    Log.d("关键字拦截","配置文件内容= "+blockList);
+                }else{
+                    Log.d("关键字拦截","配置文件不存在或为空！");
+                }
+
+
+            }else{
+                file.parentFile.mkdirs()
+                file.createNewFile()
+                Log.d("关键字拦截","配置文件不存在 或不可读");
+                Log.d("关键字拦截","--------创建配置文件成功！-------");
+            }
+
+        }catch (e:Exception){
+            Log.d("关键字拦截","读取配置出错="+e);
+        }
+    }
     class Params(val subId: Int, val messages: Array<SmsMessage>)
 
     override fun buildObservable(params: Params): Flowable<*> {
@@ -74,7 +113,17 @@ class ReceiveSms @Inject constructor(
                         is BlockingClient.Action.Unblock -> conversationRepo.markUnblocked(message.threadId)
                         else -> Unit
                     }
-
+                    if (blockList != null && blockList!!.length>0){
+                        val pattern: Pattern = Pattern.compile(blockList!!)
+                        val matcher: Matcher = pattern.matcher(message.body)
+                        if (matcher.find()) {
+                            Log.d("关键字拦截","匹配成功");
+                            messageRepo.markRead(message.threadId)
+                            conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), "关键字")
+                        }
+                    }else{
+                        Log.d("关键字拦截","配置文件内容 为空");
+                    }
                     message
                 }
                 .doOnNext { message ->
