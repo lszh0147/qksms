@@ -96,15 +96,17 @@ class MainActivity : QkThemedActivity(), MainView {
                 binding.drawer.backup.clicks().map { NavItem.BACKUP },
                 binding.drawer.scheduled.clicks().map { NavItem.SCHEDULED },
                 binding.drawer.blocking.clicks().map { NavItem.BLOCKING },
-                binding.drawer.settings.clicks().map { NavItem.SETTINGS },
-                binding.drawer.plus.clicks().map { NavItem.PLUS },
-                binding.drawer.help.clicks().map { NavItem.HELP },
-                binding.drawer.invite.clicks().map { NavItem.INVITE }))
+                binding.drawer.settings.clicks().map { NavItem.SETTINGS }
+//                ,
+//                binding.drawer.plus.clicks().map { NavItem.PLUS },
+//                binding.drawer.help.clicks().map { NavItem.HELP },
+//                binding.drawer.invite.clicks().map { NavItem.INVITE }
+        ))
     }
     override val optionsItemIntent: Subject<Int> = PublishSubject.create()
-    override val plusBannerIntent by lazy { binding.drawer.plusBanner.clicks() }
-    override val dismissRatingIntent by lazy { binding.drawer.rateDismiss.clicks() }
-    override val rateIntent by lazy { binding.drawer.rateOkay.clicks() }
+//    override val plusBannerIntent by lazy { binding.drawer.plusBanner.clicks() }
+//    override val dismissRatingIntent by lazy { binding.drawer.rateDismiss.clicks() }
+//    override val rateIntent by lazy { binding.drawer.rateOkay.clicks() }
     override val conversationsSelectedIntent by lazy { conversationsAdapter.selectionChanges }
     override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
     override val swipeConversationIntent by lazy { itemTouchCallback.swipes }
@@ -164,8 +166,8 @@ class MainActivity : QkThemedActivity(), MainView {
                     }
                     binding.syncing.progress.progressTintList = ColorStateList.valueOf(theme.theme)
                     binding.syncing.progress.indeterminateTintList = ColorStateList.valueOf(theme.theme)
-                    binding.drawer.plusIcon.setTint(theme.theme)
-                    binding.drawer.rateIcon.setTint(theme.theme)
+//                    binding.drawer.plusIcon.setTint(theme.theme)
+//                    binding.drawer.rateIcon.setTint(theme.theme)
                     binding.compose.setBackgroundTint(theme.theme)
 
                     // Set the FAB compose icon color
@@ -229,9 +231,9 @@ class MainActivity : QkThemedActivity(), MainView {
         listOf(binding.drawer.plusBadge1, binding.drawer.plusBadge2).forEach { badge ->
             badge.isVisible = drawerBadgesExperiment.variant && !state.upgraded
         }
-        binding.drawer.plus.isVisible = state.upgraded
-        binding.drawer.plusBanner.isVisible = !state.upgraded
-        binding.drawer.rateLayout.setVisible(state.showRating)
+//        binding.drawer.plus.isVisible = state.upgraded
+//        binding.drawer.plusBanner.isVisible = !state.upgraded
+//        binding.drawer.rateLayout.setVisible(state.showRating)
 
         binding.compose.setVisible(state.page is Inbox || state.page is Archived)
         conversationsAdapter.emptyView = binding.empty.takeIf { state.page is Inbox || state.page is Archived }

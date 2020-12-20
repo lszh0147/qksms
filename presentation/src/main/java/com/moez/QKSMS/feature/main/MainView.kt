@@ -33,9 +33,9 @@ interface MainView : QkView<MainState> {
     val homeIntent: Observable<*>
     val navigationIntent: Observable<NavItem>
     val optionsItemIntent: Observable<Int>
-    val plusBannerIntent: Observable<*>
-    val dismissRatingIntent: Observable<*>
-    val rateIntent: Observable<*>
+//    val plusBannerIntent: Observable<*>
+//    val dismissRatingIntent: Observable<*>
+//    val rateIntent: Observable<*>
     val conversationsSelectedIntent: Observable<List<Long>>
     val confirmDeleteIntent: Observable<List<Long>>
     val swipeConversationIntent: Observable<Pair<Long, Int>>
@@ -55,4 +55,4 @@ interface MainView : QkView<MainState> {
 
 }
 
-enum class NavItem { BACK, INBOX, ARCHIVED, BACKUP, SCHEDULED, BLOCKING, SETTINGS, PLUS, HELP, INVITE }
+enum class NavItem { BACK, INBOX, ARCHIVED, BACKUP, SCHEDULED, BLOCKING, SETTINGS}

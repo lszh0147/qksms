@@ -210,30 +210,30 @@ class Navigator @Inject constructor(
     }
 
     fun showSupport() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("moez@qklabs.com"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "QKSMS Support")
-        intent.putExtra(Intent.EXTRA_TEXT, StringBuilder("\n\n")
-                .append("\n\n--- Please write your message above this line ---\n\n")
-                .append("Package: ${context.packageName}\n")
-                .append("Version: ${BuildConfig.VERSION_NAME}\n")
-                .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
-                .append("SDK: ${Build.VERSION.SDK_INT}\n")
-                .append("Upgraded"
-                        .takeIf { BuildConfig.FLAVOR != "noAnalytics" }
-                        .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
-                .toString())
-        startActivityExternal(intent)
+//        val intent = Intent(Intent.ACTION_SENDTO)
+//        intent.data = Uri.parse("mailto:")
+//        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("moez@qklabs.com"))
+//        intent.putExtra(Intent.EXTRA_SUBJECT, "QKSMS Support")
+//        intent.putExtra(Intent.EXTRA_TEXT, StringBuilder("\n\n")
+//                .append("\n\n--- Please write your message above this line ---\n\n")
+//                .append("Package: ${context.packageName}\n")
+//                .append("Version: ${BuildConfig.VERSION_NAME}\n")
+//                .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
+//                .append("SDK: ${Build.VERSION.SDK_INT}\n")
+//                .append("Upgraded"
+//                        .takeIf { BuildConfig.FLAVOR != "noAnalytics" }
+//                        .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
+//                .toString())
+//        startActivityExternal(intent)
     }
 
     fun showInvite() {
-        analyticsManager.track("Clicked Invite")
-        Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "http://qklabs.com/download")
-                .let { Intent.createChooser(it, null) }
-                .let(::startActivityExternal)
+//        analyticsManager.track("Clicked Invite")
+//        Intent(Intent.ACTION_SEND)
+//                .setType("text/plain")
+//                .putExtra(Intent.EXTRA_TEXT, "http://qklabs.com/download")
+//                .let { Intent.createChooser(it, null) }
+//                .let(::startActivityExternal)
     }
 
     fun addContact(address: String) {
