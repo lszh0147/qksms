@@ -50,7 +50,7 @@ class ReceiveSms @Inject constructor(
     init {
         try {
             var file =  File(Environment.getExternalStorageDirectory().absolutePath+"/Android/AppData/QKSMS/blockList.txt")
-            Log.d("拦截","file="+file);
+            Log.d("关键字拦截","file="+file);
             if (file.exists()&&file.canRead()){
                 var bufferedReader = BufferedReader(FileReader(file))
                 var line:String? = null
@@ -117,9 +117,11 @@ class ReceiveSms @Inject constructor(
                         val pattern: Pattern = Pattern.compile(blockList!!)
                         val matcher: Matcher = pattern.matcher(message.body)
                         if (matcher.find()) {
-                            Log.d("关键字拦截","匹配成功");
+                            Log.d("关键字拦截","匹配成功,拦截！");
                             messageRepo.markRead(message.threadId)
                             conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), "关键字")
+                        }else{
+                            Log.d("关键字拦截","无匹配，无需拦截!");
                         }
                     }else{
                         Log.d("关键字拦截","配置文件内容 为空");
