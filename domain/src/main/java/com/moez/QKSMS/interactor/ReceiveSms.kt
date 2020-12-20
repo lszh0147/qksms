@@ -30,31 +30,32 @@ import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.Preferences
 import io.reactivex.Flowable
 import timber.log.Timber
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
+import java.io.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
-var blockList:String? = null
+
+var blockList: String? = null
+var blockListNumber: String? = null
+
 class ReceiveSms @Inject constructor(
-    private val conversationRepo: ConversationRepository,
-    private val blockingClient: BlockingClient,
-    private val prefs: Preferences,
-    private val messageRepo: MessageRepository,
-    private val notificationManager: NotificationManager,
-    private val updateBadge: UpdateBadge,
-    private val shortcutManager: ShortcutManager
+        private val conversationRepo: ConversationRepository,
+        private val blockingClient: BlockingClient,
+        private val prefs: Preferences,
+        private val messageRepo: MessageRepository,
+        private val notificationManager: NotificationManager,
+        private val updateBadge: UpdateBadge,
+        private val shortcutManager: ShortcutManager
 ) : Interactor<ReceiveSms.Params>() {
 
     init {
-        if(blockList == null){
+        if (blockList == null) {
             try {
-                var file =  File(Environment.getExternalStorageDirectory().absolutePath+"/Android/AppData/QKSMS/blockList.txt")
-                Log.d("拦截","读取配置表：file="+file);
-                if (file.exists()&&file.canRead()){
+                var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/blockList.txt")
+                Log.d("拦截", "读取 关键字 配置表：file=" + file);
+                if (file.exists() && file.canRead()) {
                     var bufferedReader = BufferedReader(FileReader(file))
-                    var line:String? = null
+                    var line: String? = null
                     var totalLine = StringBuffer()
                     while (bufferedReader.readLine().also { line = it } != null) {
                         totalLine.append(line)
@@ -62,25 +63,58 @@ class ReceiveSms @Inject constructor(
                     bufferedReader.close()
 
                     blockList = totalLine.toString()
-                    if (blockList!=null){
-                        Log.d("拦截","配置文件内容= "+blockList);
-                    }else{
-                        Log.d("拦截","配置文件不存在或为空！");
+                    if (blockList != null) {
+                        Log.d("拦截", "关键字 配置文件内容= " + blockList);
+                    } else {
+                        Log.d("拦截", "关键字 配置文件 Android/AppData/QKSMS/blockList.txt 为空！");
                     }
 
 
-                }else{
+                } else {
                     file.parentFile.mkdirs()
                     file.createNewFile()
-                    Log.d("拦截","配置文件不存在 或不可读");
-                    Log.d("拦截","--------创建配置文件成功！-------");
+                    Log.d("拦截", "关键字 配置文件 Android/AppData/QKSMS/blockList.txt 不存在！");
+                    Log.d("拦截", "--------创建Android/AppData/QKSMS/blockList.txt 成功！-------");
                 }
 
-            }catch (e:Exception){
-                Log.d("拦截","读取配置出错="+e);
+            } catch (e: Exception) {
+                Log.d("拦截", "读取Android/AppData/QKSMS/blockList.txt 出错=" + e);
+            }
+        }
+        if (blockListNumber == null) {
+            try {
+                var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/blockListNumber.txt")
+                Log.d("拦截", "读取 号码 配置表：file=" + file);
+                if (file.exists() && file.canRead()) {
+                    var bufferedReader = BufferedReader(FileReader(file))
+                    var line: String? = null
+                    var totalLine = StringBuffer()
+                    while (bufferedReader.readLine().also { line = it } != null) {
+                        totalLine.append(line)
+                    }
+                    bufferedReader.close()
+
+                    blockListNumber = totalLine.toString()
+                    if (blockListNumber != null) {
+                        Log.d("拦截", "号码 配置文件内容= " + blockListNumber);
+                    } else {
+                        Log.d("拦截", "号码 配置文件为空！");
+                    }
+
+
+                } else {
+                    file.parentFile.mkdirs()
+                    file.createNewFile()
+                    Log.d("拦截", "号码  配置文件不存在 或不可读");
+                    Log.d("拦截", "--------创建 Android/AppData/QKSMS/blockListNumber.txt 配置文件成功！-------");
+                }
+
+            } catch (e: Exception) {
+                Log.d("拦截", "读取 号码   配置出错=" + e);
             }
         }
     }
+
     class Params(val subId: Int, val messages: Array<SmsMessage>)
 
     override fun buildObservable(params: Params): Flowable<*> {
@@ -94,7 +128,7 @@ class ReceiveSms @Inject constructor(
                             .mapNotNull { message -> message.displayMessageBody }
                             .reduce { body, new -> body + new }
 
-                    Log.d("拦截","收到消息：address="+address+" , body="+body);
+                    Log.d("拦截", "收到消息：address=" + address);
 
                     val action = blockingClient.getAction(address).blockingGet()
                     val shouldDrop = prefs.drop.get()
@@ -110,31 +144,78 @@ class ReceiveSms @Inject constructor(
                     val message = messageRepo.insertReceivedSms(it.subId, address, body, time)
                     when (action) {
                         is BlockingClient.Action.Block -> {
-                            Log.d("拦截","号码拦截： 成功")
+                            Log.d("拦截", "号码拦截： 成功")
                             messageRepo.markRead(message.threadId)
                             conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), action.reason)
                         }
                         is BlockingClient.Action.Unblock -> {
-                            Log.d("拦截","号码拦截： 失败，无匹配，进行关键词拦截")
+                            Log.d("拦截", "号码拦截： 失败，无匹配，进行关键词拦截")
                             conversationRepo.markUnblocked(message.threadId)
                         }
                         else -> Unit
                     }
 
-                    if(action is BlockingClient.Action.Unblock){
-                        if (blockList != null && blockList!!.length>0){
+                    if (action is BlockingClient.Action.Unblock) {
+                        var shuldBlockNumber = true
+                        if (blockList != null && blockList!!.length > 0) {
                             val pattern: Pattern = Pattern.compile(blockList!!)
                             val matcher: Matcher = pattern.matcher(body)
                             if (matcher.find()) {
-                                Log.d("拦截","关键字拦截：成功");
+                                Log.d("拦截", "关键字拦截：成功");
+                                shuldBlockNumber = false
                                 messageRepo.markRead(message.threadId)
                                 conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), "关键字")
-                            }else{
-                                Log.d("拦截","关键字拦截：失败，无匹配");
+                            } else {
+                                Log.d("拦截", "关键字拦截：失败，无匹配");
                             }
-                        }else{
-                            Log.d("拦截","关键字拦截：失败，配置文件内容为空");
+                        } else {
+                            Log.d("拦截", "关键字拦截：失败，配置文件内容为空");
                         }
+
+                        var shouldWirteToLog = false
+                        var failNumber = "null"
+                        if (shuldBlockNumber) {
+                            Log.d("拦截", "关键字拦截： 失败，进行开头号码拦截")
+                            if (blockListNumber != null && blockListNumber!!.length > 0) {
+                                var list = blockListNumber!!.split("|")
+                                Log.d("拦截", "开头号码拦截： list.size)=" + list.size)
+                                for (start: String in list) {
+                                    Log.d("拦截", "开头号码拦截： 号码=" + address + " , 开头=" + start)
+                                    if (address.startsWith(start)) {
+                                        Log.d("拦截", "开头号码拦截：成功");
+                                        messageRepo.markRead(message.threadId)
+                                        conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), "关键字")
+                                        shouldWirteToLog = false
+                                        break;
+                                    } else {
+                                        shouldWirteToLog = true
+                                        failNumber = address
+                                    }
+                                }
+                            } else {
+                                shouldWirteToLog = false
+                                Log.d("拦截", "开头号码拦截：失败，配置文件内容为空");
+                            }
+                        }
+
+                        if (shouldWirteToLog){
+                            Log.d("拦截", "开头号码拦截：失败 无匹配 写入log");
+                            try {
+                                var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/numberCompareLog.txt")
+                                if (!file.exists()) {
+                                    file.parentFile.mkdirs()
+                                    file.createNewFile()
+                                }
+                                var bufferedWirter = BufferedWriter(FileWriter(file, true))
+                                bufferedWirter.append(failNumber + "\n")
+                                bufferedWirter.flush()
+                                bufferedWirter.close()
+                            } catch (e: Exception) {
+                                Log.d("拦截", "写入Log文件出错=" + e);
+                            }
+                        }
+
+
                     }
                     message
                 }

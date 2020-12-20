@@ -57,33 +57,33 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
         return false
     }
 
-    fun compareStartWith(first: String, second: String): Boolean {
-
-        Log.d("拦截", "号码拦截，号码匹配：compareStartWith first=" + first + ", second=" + second);
-
-        if (second.startsWith(first)) {
-            Log.d("拦截", "号码拦截，号码匹配：成功");
-            return true
-        }
-
-
-        try {
-            var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/numberCompareLog.txt")
-            if (!file.exists()) {
-                file.parentFile.mkdirs()
-                file.createNewFile()
-            }
-            var bufferedWirter = BufferedWriter(FileWriter(file,true))
-            var string: String =  "匹配失败"+first + ", second=" + second
-            bufferedWirter.append(string+"\n")
-            bufferedWirter.flush()
-            bufferedWirter.close()
-        } catch (e: Exception) {
-            Log.d("拦截", "写入Log文件出错=" + e);
-        }
-        Log.d("拦截", "号码拦截，号码匹配：失败");
-        return false
-    }
+//    fun compareStartWith(first: String, second: String): Boolean {
+//
+//        Log.d("拦截", "号码拦截，号码匹配：compareStartWith first=" + first + ", second=" + second);
+//
+//        if (second.startsWith(first)) {
+//            Log.d("拦截", "号码拦截，号码匹配：成功");
+//            return true
+//        }
+//
+//
+//        try {
+//            var file = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/AppData/QKSMS/numberCompareLog.txt")
+//            if (!file.exists()) {
+//                file.parentFile.mkdirs()
+//                file.createNewFile()
+//            }
+//            var bufferedWirter = BufferedWriter(FileWriter(file,true))
+//            var string: String =  "匹配失败"+first + ", second=" + second
+//            bufferedWirter.append(string+"\n")
+//            bufferedWirter.flush()
+//            bufferedWirter.close()
+//        } catch (e: Exception) {
+//            Log.d("拦截", "写入Log文件出错=" + e);
+//        }
+//        Log.d("拦截", "号码拦截，号码匹配：失败");
+//        return false
+//    }
 
     fun isPossibleNumber(number: CharSequence): Boolean {
         return parse(number) != null
