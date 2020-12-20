@@ -53,7 +53,7 @@ class BackupRepositoryImpl @Inject constructor(
 ) : BackupRepository {
 
     companion object {
-        private val BACKUP_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/QKSMS/Backups"
+        private val BACKUP_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/Android/AppData/QKSMS/Backups"
     }
 
     data class Backup(
