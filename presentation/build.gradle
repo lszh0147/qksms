@@ -36,6 +36,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         setProperty("archivesBaseName", "QKSMS-v${versionName}")
+        ndk{
+            abiFilters "arm64-v8a"
+        }
     }
 
 //    signingConfigs {
