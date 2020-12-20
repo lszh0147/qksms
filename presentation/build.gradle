@@ -95,12 +95,12 @@ android {
         enabled = true
     }
 
-    if (System.getenv("CI") == "true") {
-        signingConfigs.release.storeFile = file("../keystore")
-        signingConfigs.release.storePassword = System.getenv("keystore_password")
-        signingConfigs.release.keyAlias = System.getenv("key_alias")
-        signingConfigs.release.keyPassword = System.getenv("key_password")
-    }
+//    if (System.getenv("CI") == "true") {
+//        signingConfigs.release.storeFile = file("../keystore")
+//        signingConfigs.release.storePassword = System.getenv("keystore_password")
+//        signingConfigs.release.keyAlias = System.getenv("key_alias")
+//        signingConfigs.release.keyPassword = System.getenv("key_password")
+//    }
 }
 
 configurations {
@@ -217,7 +217,7 @@ dependencies {
     withAnalyticsRelease project(path: ':data', configuration: 'withAnalyticsRelease')
 }
 
-if (getGradle().getStartParameter().getTaskRequests().toString().contains("WithAnalytics")) {
-    apply plugin: 'io.fabric'
-    apply plugin: 'com.google.gms.google-services'
-}
+//if (getGradle().getStartParameter().getTaskRequests().toString().contains("WithAnalytics")) {
+//    apply plugin: 'io.fabric'
+//    apply plugin: 'com.google.gms.google-services'
+//}
