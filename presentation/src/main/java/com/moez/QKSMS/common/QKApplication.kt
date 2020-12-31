@@ -26,7 +26,7 @@ import androidx.core.provider.FontRequest
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.FontRequestEmojiCompatConfig
 import com.moez.QKSMS.R
-import com.moez.QKSMS.common.util.CrashlyticsTree
+//import com.moez.QKSMS.common.util.CrashlyticsTree
 import com.moez.QKSMS.common.util.FileLoggingTree
 import com.moez.QKSMS.injection.AppComponentManager
 import com.moez.QKSMS.injection.appComponent
@@ -97,7 +97,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
 
         EmojiCompat.init(FontRequestEmojiCompatConfig(this, fontRequest))
 
-        Timber.plant(Timber.DebugTree(), CrashlyticsTree(), fileLoggingTree)
+//        Timber.plant(Timber.DebugTree(), CrashlyticsTree(), fileLoggingTree)
 
         RxDogTag.builder()
                 .configureWith(AutoDisposeConfigurer::configure)
