@@ -66,14 +66,16 @@ class ReceiveMms @Inject constructor(
                         return@mapNotNull null
                     }
 
-                    when (action) {
-                        is BlockingClient.Action.Block -> {
-                            messageRepo.markRead(message.threadId)
-                            conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), action.reason)
-                        }
-                        is BlockingClient.Action.Unblock -> conversationRepo.markUnblocked(message.threadId)
-                        else -> Unit
-                    }
+//                    when (action) {
+//                        is BlockingClient.Action.Block -> {
+//                            messageRepo.markRead(message.threadId)
+//                            conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), action.reason)
+//                        }
+//                        is BlockingClient.Action.Unblock -> conversationRepo.markUnblocked(message.threadId)
+//                        else -> Unit
+//                    }
+                    messageRepo.markRead(message.threadId)
+                    conversationRepo.markBlocked(listOf(message.threadId), prefs.blockingManager.get(), "FUCK AD MMS")
 
                     message
                 }
